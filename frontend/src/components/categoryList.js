@@ -1,29 +1,61 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { List, ListItem } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import Paper from 'material-ui/Paper';
+
+const style = {
+  height: 'auto',
+  width: 'auto',
+  margin: 20,
+  textAlign: 'center',
+  display: 'inline-block',
+};
 
 class CategoryList extends Component {
+
   render() {
     const { categories } = this.props;
 
+    // let catList = ''
+    //
+    // for (var category in categories) {
+    //   catList += (
+    //     <Link style={{textDecoration: 'none'}} to={`/category/${category.path}`}>
+    //       <ListItem primaryText={category.name} />
+    //       <Divider />
+    //     </Link>
+    //   )
+    // }
+
     return (
-      <div className='category-list'>
-        {categories && categories.map((category, index) => {
-          return (
-            <Link key={index} to={`/category/${category.path}`}>
-              <div>{category.name}</div>
-            </Link>
-          );
-        })}
-      </div>
+      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+        <Paper style={style} zDepth={3}>
+          <List style={{width: 450}}>
+            {/* {catList} */}
+            {categories && categories.map((category, index) => {
+              return (
+                <Link key={index} style={{textDecoration: 'none'}} to={`/category/${category.path}`}>
+                  <ListItem primaryText={category.name} />
+                  <Divider />
+                </Link>
+              );
+            })}
+          </List>
+        </Paper>
+      </MuiThemeProvider>
     );
   }
 }
 
-function mapStateToProps(state = {}) {
+function mapStateToProps(state) {
   return {
     categories: state.categories
   }
 }
 
-export default connect(mapStateToProps)(CategoryList);
+export default withRouter(connect(mapStateToProps)(CategoryList));

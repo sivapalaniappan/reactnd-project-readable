@@ -1,10 +1,44 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { List, ListItem } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import Paper from 'material-ui/Paper';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+
+const style = {
+  height: 'auto',
+  width: 'auto',
+  margin: 20,
+  textAlign: 'center',
+  display: 'inline-block',
+};
 
 class PostList extends Component {
   componentWillMount() {
     this.setState({ sort: 'scoreDesc' });
+  }
+
+  sortAscending (a, b) {
+    if (a < b)
+      return -1;
+    if (a > b)
+      return 1;
+    return 0;
+  }
+
+  sortDescending(a, b) {
+    if (a > b)
+      return -1;
+    if (a < b)
+      return 1;
+    return 0;
   }
 
   render() {
@@ -17,23 +51,19 @@ class PostList extends Component {
 
     switch(this.state.sort) {
       case ('scoreAsc') :
-        posts.sort((a,b) => {
-          if (a.voteScore < b.voteScore)
-            return -1;
-          if (a.voteScore > b.voteScore)
-            return 1;
-          return 0;
-        })
+        posts.sort((a,b) => this.sortAscending(a.voteScore, b.voteScore));
         break;
 
       case ('scoreDesc') :
-        posts.sort((a,b) => {
-          if (a.voteScore > b.voteScore)
-            return -1;
-          if (a.voteScore < b.voteScore)
-            return 1;
-          return 0;
-        })
+        posts.sort((a,b) => this.sortDescending(a.voteScore, b.voteScore));
+        break;
+
+      case ('createdAsc') :
+        posts.sort((a,b) => this.sortAscending(a.timestamp, b.timestamp));
+        break;
+
+      case ('createdDesc') :
+        posts.sort((a,b) => this.sortDescending(a.timestamp, b.timestamp));
         break;
 
       default:
@@ -41,25 +71,49 @@ class PostList extends Component {
     }
 
     return (
-      <div>
-        <div>
-          <span>Sort: </span>
-          <select onChange={(e) => this.setState({ sort: e.target.value })}>
-            <option value="scoreDesc">Score High to Low</option>
-            <option value="scoreAsc">Score Low to High</option>
-          </select>
-        </div>
-        {posts && posts.map((post, index) => {
-          return (
-            <Link key={index} to={{pathname: '/postDetail',
-                                query: { postID: post.id }
-                      }}>
-              <div>{post.title} by {post.author}</div>
-              <div>Score: {post.voteScore} Category: {post.category} Created: {post.timestamp}</div>
+      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+        <Paper style={style} zDepth={3}>
+          <List style={{width: 600}}>
+            <SelectField
+              floatingLabelText="Sort"
+              value={this.state.sort}
+              onChange={(event, index, value) => this.setState({ sort: value })}
+            >
+              <MenuItem value={'scoreDesc'} primaryText="Score High to Low" />
+              <MenuItem value={'scoreAsc'} primaryText="Score Low to High" />
+              <MenuItem value={'createdDesc'} primaryText="Created Recent to Older" />
+              <MenuItem value={'createdAsc'} primaryText="Created Older to Recent" />
+            </SelectField>
+            <Link style={{textDecoration: 'none'}}
+              to={{pathname: '/modifyPost',
+                   query: { postID: 'newPost' }
+                 }}>
+              <FloatingActionButton backgroundColor='white' style={{marginLeft: 100}}>
+                <ContentAdd />
+              </FloatingActionButton>
             </Link>
-          );
-        })}
-      </div>
+            {posts && posts.map((post, index) => {
+              return (
+                <Link key={index} style={{textDecoration: 'none'}}
+                  to={{pathname: '/postDetail',
+                       query: { postID: post.id }
+                     }}>
+                  <ListItem
+                    primaryText={post.title}
+                    secondaryText={
+                      <div>
+                        <b>Author:</b> {post.author} <b>Score:</b> {post.voteScore} <b>Category:</b> {post.category} <b>Created:</b> {JSON.stringify(new Date(post.timestamp))}
+                      </div>
+                    }
+                    secondaryTextLines={1}
+                  />
+                  <Divider />
+                </Link>
+              );
+            })}
+          </List>
+        </Paper>
+      </MuiThemeProvider>
     );
   }
 }
@@ -70,4 +124,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(PostList);
+export default withRouter(connect(mapStateToProps)(PostList));

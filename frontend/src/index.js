@@ -1,19 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import thunk from 'redux-thunk';
+import logger from 'redux-logger';
+
 import './index.css';
 import App from './views/App';
 import reducer from './reducers';
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
 const store = createStore(
   reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  composeEnhancers(
+    applyMiddleware(logger, thunk)
+  )
 );
-
-console.log('Right after creating store');
-console.log(store.getState());
 
 ReactDOM.render(
   <Provider store={store}>

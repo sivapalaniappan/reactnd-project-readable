@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import PostList from '../components/postList';
 
 class CategoryView extends Component {
@@ -16,4 +17,4 @@ class CategoryView extends Component {
   }
 }
 
-export default CategoryView;
+export default withRouter(CategoryView);
