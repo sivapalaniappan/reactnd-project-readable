@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "crypto": "^1.0.1",
+    "material-ui": "^0.19.4",
+    "moment": "^2.19.3",
     "react": "^15.6.1",
+    "react-dedux": "*",
     "react-dom": "^15.6.1",
+    "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.13",
+    "redux": "^3.6.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0"
   },

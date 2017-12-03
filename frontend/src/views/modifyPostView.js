@@ -76,6 +76,11 @@ class ModifyPostView extends Component {
     }
   };
 
+  cancelAndGoBack = (ev) => {
+      ev.preventDefault();
+      this.props.history.push('/');
+  };
+
   updateState = (ev, type) => {
     ev.preventDefault();
     switch (type) {
@@ -117,8 +122,9 @@ class ModifyPostView extends Component {
               <span><b>Written By:</b> <input type="text" value={this.state.postAuthor} onChange={(ev) => this.updateState(ev, 'AUTHOR')}/></span>
               <br/>
               <div>
-                <button onClick={(ev) => this.updateState(ev, 'CLEAR')}>Clear</button>
                 <button onClick={this.addThisPost}>Save</button>
+                <button onClick={(ev) => this.updateState(ev, 'CLEAR')}>Clear</button>
+                <button onClick={this.cancelAndGoBack}>Cancel</button>
               </div>
             </Paper>
           </div>

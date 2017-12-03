@@ -8,6 +8,7 @@ import Paper from 'material-ui/Paper';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import crypto from 'crypto';
+import Moment from 'moment';
 
 import { getComments, voteComment, addCommentToPost, editCommentToPost, deleteComment } from '../actions/commentActions';
 import { votePost, deletePost } from '../actions/postActions';
@@ -139,7 +140,7 @@ class PostDetail extends Component {
                 <span><b>Details:</b> {postToDisplay.body}</span>
                 <br/>
                 <span><b>Vote:</b> <button onClick={(ev) => this.changeVote(ev, 'POST', currentPostID, 'downVote')}>-</button><button disabled>{postToDisplay.voteScore}</button><button onClick={(ev) => this.changeVote(ev, 'POST', currentPostID, 'upVote')}>+</button></span>
-                <span><b>Created:</b> {JSON.stringify(new Date(postToDisplay.timestamp))}</span>
+                <span><b>Created:</b> {Moment(postToDisplay.timestamp).format("DD MMM YYYY hh:mm a")}</span>
                 <br/>
                 <div>
                   <Link style={{textDecoration: 'none'}}

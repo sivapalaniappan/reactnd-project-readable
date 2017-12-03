@@ -11,6 +11,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import Moment from 'moment';
 
 const style = {
   height: 'auto',
@@ -102,7 +103,7 @@ class PostList extends Component {
                     primaryText={post.title}
                     secondaryText={
                       <div>
-                        <b>Author:</b> {post.author} <b>Score:</b> {post.voteScore} <b>Category:</b> {post.category} <b>Created:</b> {JSON.stringify(new Date(post.timestamp))}
+                        <b>Author:</b> {post.author} <b>Score:</b> {post.voteScore} <b>Category:</b> {post.category} <b>Created:</b> {Moment(post.timestamp).format("DD MMM YYYY hh:mm a")}
                       </div>
                     }
                     secondaryTextLines={1}
