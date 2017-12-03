@@ -4,12 +4,9 @@ import { Link, withRouter } from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import FontIcon from 'material-ui/FontIcon';
 import crypto from 'crypto';
 
 import { getComments, voteComment, addCommentToPost, editCommentToPost, deleteComment } from '../actions/commentActions';
@@ -100,7 +97,9 @@ class PostDetail extends Component {
 
   deletePost = (ev, postId) => {
     ev.preventDefault();
-    this.props.deleteThisPost(postId);
+    this.props.deleteThisPost(postId, () => {
+          this.props.history.push('/');
+        });
   };
 
   render () {
@@ -199,7 +198,7 @@ function mapDispatchToProps(dispatch) {
   return {
     fetchComments: (postId) => dispatch(getComments(postId)),
     postVote: (postId, typeVote) => dispatch(votePost(postId, typeVote)),
-    deleteThisPost: (postId) => dispatch(deletePost(postId)),
+    deleteThisPost: (postId, callback) => dispatch(deletePost(postId, callback)),
     commentVote: (commentId, typeVote) => dispatch(voteComment(commentId, typeVote)),
     addNewComment: (comment, postId) => dispatch(addCommentToPost(comment, postId)),
     modifyComment: (comment, postId) => dispatch(editCommentToPost(comment, postId)),

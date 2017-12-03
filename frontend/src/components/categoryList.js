@@ -21,22 +21,10 @@ class CategoryList extends Component {
   render() {
     const { categories } = this.props;
 
-    // let catList = ''
-    //
-    // for (var category in categories) {
-    //   catList += (
-    //     <Link style={{textDecoration: 'none'}} to={`/category/${category.path}`}>
-    //       <ListItem primaryText={category.name} />
-    //       <Divider />
-    //     </Link>
-    //   )
-    // }
-
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <Paper style={style} zDepth={3}>
           <List style={{width: 450}}>
-            {/* {catList} */}
             {categories && categories.map((category, index) => {
               return (
                 <Link key={index} style={{textDecoration: 'none'}} to={`/category/${category.path}`}>

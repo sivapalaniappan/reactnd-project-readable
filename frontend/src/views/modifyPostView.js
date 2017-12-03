@@ -7,7 +7,7 @@ import Paper from 'material-ui/Paper';
 import crypto from 'crypto';
 import _ from 'lodash';
 
-import { addPost } from '../actions/postActions';
+import { addPost, editPost } from '../actions/postActions';
 
 const style = {
   height: 'auto',
@@ -17,6 +17,8 @@ const style = {
   textAlign: 'justify',
   display: 'inline-block',
 };
+
+let postToModify;
 
 class ModifyPostView extends Component {
   constructor(props) {
@@ -30,7 +32,7 @@ class ModifyPostView extends Component {
   }
 
   componentWillMount() {
-    const postToModify = _.get(this, 'props.location.query.post');
+    postToModify = _.get(this, 'props.location.query.post');
     if (postToModify) {
       this.setState({
         postTitle: postToModify.title,
@@ -53,14 +55,25 @@ class ModifyPostView extends Component {
   addThisPost = (ev) => {
     ev.preventDefault();
     const post = {
-      id: crypto.randomBytes(10).toString('hex'),
       timestamp: Date.now(),
       title: this.state.postTitle,
       category: this.state.postCategory,
       body: this.state.postBody,
       author: this.state.postAuthor
     };
-    this.props.addNewPost(post);
+
+    if(postToModify) {
+        post.id = postToModify.id;
+        this.props.editCurrentPost(post, () => {
+            this.props.history.push('/');
+        });
+    }
+    else {
+        post.id = crypto.randomBytes(10).toString('hex');
+        this.props.addNewPost(post, () => {
+            this.props.history.push('/');
+        });
+    }
   };
 
   updateState = (ev, type) => {
@@ -121,7 +134,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    addNewPost: (post) => dispatch(addPost(post))
+    addNewPost: (post, callback) => dispatch(addPost(post, callback)),
+    editCurrentPost: (post, callback) => dispatch(editPost(post, callback))
   }
 }
 

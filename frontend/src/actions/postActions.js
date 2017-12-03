@@ -27,10 +27,14 @@ export const votePost = (postID, typeVote) => dispatch => (
   api.votePost(postID, typeVote).then(res => dispatch(setPostById(res)))
 )
 
-export const addPost = (post) => dispatch => (
-  api.addPost(post).then(res => dispatch(setNewPost(res)))
+export const addPost = (post, callback) => dispatch => (
+  api.addPost(post).then(res => callback())
 )
 
-export const deletePost = (postId) => dispatch => (
-  api.deletePost(postId).then(res => {return;})
+export const editPost = (post, callback) => dispatch => (
+  api.editPost(post).then(res => callback())
+)
+
+export const deletePost = (postId, callback) => dispatch => (
+  api.deletePost(postId).then(res => callback())
 )

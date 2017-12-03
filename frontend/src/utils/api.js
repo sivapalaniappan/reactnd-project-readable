@@ -17,11 +17,6 @@ export const getPosts = (id = '') => {
     .then(res => res.json());
 }
 
-// export const getPostsByCategory = (category) => {
-//   return fetch(`${BASE_URI}/${category}/posts`, {headers})
-//   .then(res => res.json());
-// }
-
 export const addPost = ({id, timestamp, title, body, author, category}) => {
   return fetch(`${BASE_URI}/posts`, {headers, method: 'POST', body: JSON.stringify({
     id,
@@ -43,14 +38,17 @@ export const votePost = (id = '', typeVote) => {
   })})
   .then(res => res.json());
 }
-// export const editPost = (id = '', {title, body}) => {
-//   return fetch(`${BASE_URI}/posts/${id}`, {headers, method: 'PUT', body: JSON.stringify({
-//     title,
-//     body,
-//   })})
-//   .then(res => {return;});
-// }
-//
+
+export const editPost = (post = {}) => {
+  return fetch(`${BASE_URI}/posts/${post.id}`, {headers, method: 'PUT', body: JSON.stringify({
+    title: post.title,
+    body: post.body,
+    category: post.category,
+    author: post.author
+  })})
+  .then(res => {return;});
+}
+
 export const deletePost = (id = '') => {
   return fetch(`${BASE_URI}/posts/${id}`, {headers, method: 'DELETE'})
   .then(res => {return;});

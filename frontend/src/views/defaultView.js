@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import PostList from '../components/postList'
 import CategoryList from '../components/categoryList';
 
+import { getCategories } from '../actions/categoryActions';
+import { getPosts } from '../actions/postActions';
+
 class DefaultView extends Component {
+    componentWillMount() {
+        this.props.fetchCategories();
+        this.props.fetchPosts();
+    }
+
   render() {
     return(
       <div>
@@ -25,4 +34,15 @@ class DefaultView extends Component {
   }
 }
 
-export default withRouter(DefaultView);
+function mapStateToProps(state) {
+    return state;
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchCategories: () => dispatch(getCategories()),
+    fetchPosts: () => dispatch(getPosts())
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DefaultView));

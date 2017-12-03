@@ -9,9 +9,7 @@ export default (state = initialState, action) => {
 
   switch (action.type) {
     case SET_POSTS:
-      return [
-        ...posts
-      ]
+      return [...posts];
     case SET_POST_BY_ID:
       const newState = state.map(existingPost => {
         if (existingPost.id === post.id)
@@ -23,7 +21,7 @@ export default (state = initialState, action) => {
       return [
         ...state,
         post
-      ]
+      ];
     default:
       return [...state];
   }

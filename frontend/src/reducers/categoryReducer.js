@@ -9,12 +9,7 @@ export default (state = initialState, action) => {
 
   switch (action.type) {
     case SET_CATEGORIES:
-    console.log('inside reduceer');
-    console.log(categories);
-      return [
-        ...state,
-        ...categories
-      ]
+      return [...categories];
     default:
       return [...state];
   }
