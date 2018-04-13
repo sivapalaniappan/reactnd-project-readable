@@ -27,7 +27,7 @@ class CategoryList extends Component {
           <List style={{width: 450}}>
             {categories && categories.map((category, index) => {
               return (
-                <Link key={index} style={{textDecoration: 'none'}} to={`/category/${category.path}`}>
+                <Link key={index} style={{textDecoration: 'none'}} to={`/${category.path}`}>
                   <ListItem primaryText={category.name} />
                   <Divider />
                 </Link>

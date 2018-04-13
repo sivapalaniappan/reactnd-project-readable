@@ -9,9 +9,10 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import crypto from 'crypto';
 import Moment from 'moment';
+import { get } from 'lodash';
 
 import { getComments, voteComment, addCommentToPost, editCommentToPost, deleteComment } from '../actions/commentActions';
-import { votePost, deletePost } from '../actions/postActions';
+import { getPost, votePost, deletePost } from '../actions/postActions';
 
 const style = {
   height: 'auto',
@@ -23,8 +24,11 @@ const style = {
 };
 
 class PostDetail extends Component {
-  componentWillMount() {
-    this.props.fetchComments(this.props.location.query.postID);
+  constructor(props) {
+      super(props)
+      let postId = get(props, 'match.params.post_id')
+      this.props.fetchPost(postId)
+      this.props.fetchComments(postId)
   }
 
   state = {
@@ -104,9 +108,7 @@ class PostDetail extends Component {
   };
 
   render () {
-    let { posts, comments } = this.props;
-    const currentPostID = this.props.location.query.postID || '';
-    const postToDisplay = posts.filter(post => post.id === currentPostID)[0];
+    let { post: postToDisplay = {}, comments } = this.props;
     const commentsToDisplay = comments.filter(comment => comment.parentId === postToDisplay.id);
 
     const actions = [
@@ -119,7 +121,7 @@ class PostDetail extends Component {
         label="Submit"
         primary={true}
         keyboardFocused={true}
-        onClick={() => this.updateComment(currentPostID)}
+        onClick={() => this.updateComment(postToDisplay.id)}
       />,
     ];
 
@@ -139,7 +141,7 @@ class PostDetail extends Component {
                 <br/>
                 <span><b>Details:</b> {postToDisplay.body}</span>
                 <br/>
-                <span><b>Vote:</b> <button onClick={(ev) => this.changeVote(ev, 'POST', currentPostID, 'downVote')}>-</button><button disabled>{postToDisplay.voteScore}</button><button onClick={(ev) => this.changeVote(ev, 'POST', currentPostID, 'upVote')}>+</button></span>
+                <span><b>Vote:</b> <button onClick={(ev) => this.changeVote(ev, 'POST', postToDisplay.id, 'downVote')}>-</button><button disabled>{postToDisplay.voteScore}</button><button onClick={(ev) => this.changeVote(ev, 'POST', postToDisplay.id, 'upVote')}>+</button></span>
                 <span><b>Created:</b> {Moment(postToDisplay.timestamp).format("DD MMM YYYY hh:mm a")}</span>
                 <br/>
                 <div>
@@ -149,7 +151,7 @@ class PostDetail extends Component {
                        }}>
                        <button>Edit</button>
                   </Link>
-                  <button onClick={(ev) => this.deletePost(ev, currentPostID)}>Delete</button>
+                  <button onClick={(ev) => this.deletePost(ev, postToDisplay.id)}>Delete</button>
                 </div>
               </Paper>
             </div>
@@ -163,7 +165,7 @@ class PostDetail extends Component {
                       <span><b>Vote:</b>  <button onClick={(ev) => this.changeVote(ev, 'COMMENT', comment.id, 'downVote')}>-</button><button disabled>{comment.voteScore}</button><button onClick={(ev) => this.changeVote(ev, 'COMMENT', comment.id, 'upVote')}>+</button></span>
                       <div>
                         <button onClick={(ev) => this.editComment(ev, comment)}>Edit</button>
-                        <button onClick={(ev) => this.deleteComment(ev, comment.id, currentPostID)}>Delete</button>
+                        <button onClick={(ev) => this.deleteComment(ev, comment.id, postToDisplay.id)}>Delete</button>
                       </div>
                     </div>
                   )
@@ -190,13 +192,14 @@ class PostDetail extends Component {
 
 function mapStateToProps(state) {
   return {
-    posts: state.posts,
+    post: state.posts[0],
     comments: state.comments
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    fetchPost: (postId) => dispatch(getPost(postId)),
     fetchComments: (postId) => dispatch(getComments(postId)),
     postVote: (postId, typeVote) => dispatch(votePost(postId, typeVote)),
     deleteThisPost: (postId, callback) => dispatch(deletePost(postId, callback)),

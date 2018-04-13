@@ -44,10 +44,10 @@ class PostList extends Component {
 
   render() {
     let { posts } = this.props;
-    const { categoryPath = '' } = this.props;
+    const { category = '' } = this.props;
 
-    if(categoryPath && categoryPath !== 'All') {
-      posts = posts.filter(post => post.category === categoryPath )
+    if(category && category !== 'All') {
+      posts = posts.filter(post => post.category === category )
     }
 
     switch(this.state.sort) {
@@ -96,9 +96,8 @@ class PostList extends Component {
             {posts && posts.map((post, index) => {
               return (
                 <Link key={index} style={{textDecoration: 'none'}}
-                  to={{pathname: '/postDetail',
-                       query: { postID: post.id }
-                     }}>
+                  to={{pathname: `/${post.category}/${post.id}`}}
+                >
                   <ListItem
                     primaryText={post.title}
                     secondaryText={
