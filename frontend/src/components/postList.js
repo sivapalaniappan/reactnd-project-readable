@@ -86,9 +86,7 @@ class PostList extends Component {
               <MenuItem value={'createdAsc'} primaryText="Created Older to Recent" />
             </SelectField>
             <Link style={{textDecoration: 'none'}}
-              to={{pathname: '/modifyPost',
-                   query: { postID: 'newPost' }
-                 }}>
+              to={{pathname: `/${category || 'newcategory'}/newpost`}}>
               <FloatingActionButton backgroundColor='white' style={{marginLeft: 100}}>
                 <ContentAdd />
               </FloatingActionButton>

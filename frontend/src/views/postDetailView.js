@@ -7,6 +7,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Paper from 'material-ui/Paper';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 import crypto from 'crypto';
 import Moment from 'moment';
 import { get } from 'lodash';
@@ -27,14 +28,19 @@ class PostDetail extends Component {
   constructor(props) {
       super(props)
       let postId = get(props, 'match.params.post_id')
-      this.props.fetchPost(postId)
-      this.props.fetchComments(postId)
-  }
+      let isNewPost = postId === 'newpost' ? true : false
 
-  state = {
-    open: false,
-    newComment: ''
-  };
+      this.state = {
+        open: false,
+        newComment: '',
+        newPost: isNewPost
+      }
+
+      if(!isNewPost) {
+        this.props.fetchPost(postId)
+        this.props.fetchComments(postId)
+      }
+  }
 
   handleOpen = (changeType) => {
     if(changeType === 'NEW')
@@ -134,13 +140,25 @@ class PostDetail extends Component {
           <div>
             <div>
               <Paper style={style} zDepth={3}>
-                <span><b>Title:</b> {postToDisplay.title}</span>
-                <br/>
+                <TextField
+                  value={postToDisplay.title}
+                  id="title"
+                  floatingLabelText="Title"
+                  floatingLabelStyle={styles.floatingLabelStyle}
+                  fullWidth
+                  disabled
+                /><br/>
                 <span><b>Category:</b> {postToDisplay.category}</span>
                 <span><b>Written By:</b> {postToDisplay.author}</span>
                 <br/>
-                <span><b>Details:</b> {postToDisplay.body}</span>
-                <br/>
+                <TextField
+                  value={postToDisplay.body}
+                  id="details"
+                  floatingLabelText="Details"
+                  floatingLabelStyle={styles.floatingLabelStyle}
+                  fullWidth
+                  disabled
+                /><br/>
                 <span><b>Vote:</b> <button onClick={(ev) => this.changeVote(ev, 'POST', postToDisplay.id, 'downVote')}>-</button><button disabled>{postToDisplay.voteScore}</button><button onClick={(ev) => this.changeVote(ev, 'POST', postToDisplay.id, 'upVote')}>+</button></span>
                 <span><b>Created:</b> {Moment(postToDisplay.timestamp).format("DD MMM YYYY hh:mm a")}</span>
                 <br/>
@@ -155,6 +173,7 @@ class PostDetail extends Component {
                 </div>
               </Paper>
             </div>
+            {!this.state.newPost &&
             <div>
               <Paper style={style} zDepth={3}>
                 {commentsToDisplay && commentsToDisplay.map((comment, index) => {
@@ -173,6 +192,7 @@ class PostDetail extends Component {
                 <button onClick={() => this.handleOpen('NEW')}>Add Comment</button>
               </Paper>
             </div>
+            }
             <Dialog
               title="Add New Comment"
               actions={actions}
@@ -207,6 +227,12 @@ function mapDispatchToProps(dispatch) {
     addNewComment: (comment, postId) => dispatch(addCommentToPost(comment, postId)),
     modifyComment: (comment, postId) => dispatch(editCommentToPost(comment, postId)),
     deleteThisComment: (commentId, postId) => dispatch(deleteComment(commentId, postId))
+  }
+}
+
+const styles = {
+  floatingLabelStyle: {
+    color: 'white'
   }
 }
 
